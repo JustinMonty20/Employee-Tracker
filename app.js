@@ -37,5 +37,15 @@ async function action() {
     }
 }
 
+viewAllEmployees = () => {
+    let join = "SELECT employee.id, employee.first_name, employee.last_name, emp_role.title, department.name AS department, emp_role.salary FROM employee LEFT JOIN emp_role ON employee.role_id = emp_role.id LEFT JOIN department on emp_role.department_id = department.id"
+    connection.query( join, (err, res) => {
+        if (err) throw err
+        console.log("Getting all employees")
+        console.table(res)
+    })
+};
 
 
+
+action();
