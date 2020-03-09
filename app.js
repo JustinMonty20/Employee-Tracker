@@ -3,43 +3,44 @@ const table = require("console.table");
 const connection = require("./db/connection.js");
 const question = require("./questions");
 
-async function action() {
-    response = await inquirer.prompt(question.startQ)
+function action() {
+inquirer.prompt(question.startQ).then((response)=> {
 
     switch(response.action){
         case "add department":
         addDepartment();
         break;
-
+    
         case "add roles":
         addRoles();
         break;
-
+    
         case  "add employees":
         addEmployees();
         break;
-
+    
         case "view all departments":
         viewAllDepartments();
         break;
-
+    
         case "view all roles":
         viewAllRoles();
         break;
-
+    
         case "view all employees":
         viewAllEmployees();
         break;
-
+    
         case "update employee roles":
         updateEmpRoles();
         break;
-
+    
         case "Quit":
         connection.end();
         break;
-
+    
     }
+})
 }
 
 addDepartment = () => {
@@ -101,8 +102,45 @@ addRoles = () => {
     action();
 }
    addEmployees = () => {
+       connection.query("SELECT * FROM emp_role", (err, roles) => {
 
-   }
+           inquirer.prompt([{
+               type:"input",
+               message: "What is the employees first name?",
+               name: "firstName"
+           }, {
+               type: "input",
+               message: "What is the employees last name?",
+               name: "lastName"
+           }, {
+               type: "rawlist",
+               message: "What is this employees role in the company?",
+               name: "role",
+               choices: function (){
+                   let roleArr = []
+                   roles.forEach(element => {
+                       roleArr.push(element.title)
+                   })
+                   return roleArr;
+               }
+
+           }]).then((answer)=> {
+               for ( i = 0; i < roles.length; i++) {
+                   if (roles[i].title === answer.role) {
+                       answer.role_id = roles[i].id
+                   }
+               }
+               connection.query("INSERT INTO employee SET ?", {
+                   first_name: answer.firstName,
+                   last_name: answer.lastName,
+                   role_id: answer.role_id
+               })
+           })
+       }
+      
+    )
+    action();
+}
 
    viewAllDepartments = () => {
     connection.query("SELECT * FROM department", (err, res) => {

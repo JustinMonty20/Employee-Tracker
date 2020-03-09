@@ -25,6 +25,5 @@ const addDepartment = {
 
 module.exports = {
     startQ: startQ,
-    newDepartment: addDepartment,
-    
+    newDepartment: addDepartment
 }
