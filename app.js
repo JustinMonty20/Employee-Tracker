@@ -42,6 +42,21 @@ async function action() {
     }
 }
 
+addDepartment = () => {
+    inquirer.prompt(question.newDepartment)
+    .then((answer) => {
+        connection.query(
+            "INSERT INTO department SET name = ?", [answer.newDepartment], (err) => {
+                if(err) throw err;
+                console.log("Added a new department");
+                // ask to do another action.
+                action();
+            }
+        )
+    })
+}
+
+
 addRoles = () => {
     connection.query("SELECT * FROM department", (err, res) => {
         inquirer.prompt([{
@@ -59,7 +74,7 @@ addRoles = () => {
             choices: function () {
                 var departmentArr = [];
                 res.forEach(element => {
-                    departmentArr.push(`${element.name}`);
+                    departmentArr.push(`${element.id}`);
                 });
 
                 return departmentArr;
@@ -79,20 +94,22 @@ addRoles = () => {
     }) 
 
 }
-   
-addDepartment = () => {
-    inquirer.prompt(question.newDepartment)
-    .then((answer) => {
-        connection.query(
-            "INSERT INTO department SET name = ?", [answer.newDepartment], (err) => {
-                if(err) throw err;
-                console.log("Added a new department");
-                // ask to do another action.
-                action();
-            }
-        )
+   addEmployees = () => {
+
+   }
+
+   viewAllDepartments = () => {
+
+   }
+
+viewAllRoles = () => {
+    connection.query("SELECT * FROM emp_role", (err ,res) => {
+        if (err) throw err
+        console.log("Getting all roles..")
+        console.table(res)
     })
-}
+    action();
+    }
 
 viewAllEmployees = () => {
     let join = "SELECT employee.id, employee.first_name, employee.last_name, emp_role.title, department.name AS department, emp_role.salary FROM employee LEFT JOIN emp_role ON employee.role_id = emp_role.id LEFT JOIN department on emp_role.department_id = department.id"
@@ -104,13 +121,9 @@ viewAllEmployees = () => {
     action();
 };
 
-viewAllRoles = () => {
-connection.query("SELECT * FROM emp_role", (err ,res) => {
-    if (err) throw err
-    console.log("Getting all roles..")
-    console.table(res)
-})
-action();
+updateEmpRoles = () => {
+
 }
+
 
 action();
