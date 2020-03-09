@@ -9,12 +9,22 @@ const startQ = {
         "view all departments",
         "view all roles",
         "view all employees",
-        "update employee roles"
+        "update employee roles",
+        "Quit"
     ]
 
 }
 
+const addDepartment = {
+    message: "What is the name of the new department you adding?",
+    type: "input",
+    name: "newDepartment"
+}
+
+
+
 module.exports = {
     startQ: startQ,
+    newDepartment: addDepartment,
     
 }

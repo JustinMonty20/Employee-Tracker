@@ -34,7 +34,64 @@ async function action() {
         case "update employee roles":
         updateEmpRoles();
         break;
+
+        case "Quit":
+        connection.end();
+        break;
+
     }
+}
+
+addRoles = () => {
+    connection.query("SELECT * FROM department", (err, res) => {
+        inquirer.prompt([{
+            type: "input",
+            message: "Enter the new role.",
+            name: "newRole"
+        }, {
+            type: "input",
+            name: "salary",
+            message: "What is the new role's starting salary?"
+        }, {
+            type: "list",
+            name: "departments",
+            message: "Which department is this new role in?",
+            choices: function () {
+                var departmentArr = [];
+                res.forEach(element => {
+                    departmentArr.push(`${element.name}`);
+                });
+
+                return departmentArr;
+            }
+        
+        }]).then((answer)=> {
+            connection.query(
+                "INSERT emp_role SET ?",
+                {
+                    title: answer.newRole,
+                    salary: answer.salary,
+                    department_id: answer.departments
+                }
+            )
+
+        })
+    }) 
+
+}
+   
+addDepartment = () => {
+    inquirer.prompt(question.newDepartment)
+    .then((answer) => {
+        connection.query(
+            "INSERT INTO department SET name = ?", [answer.newDepartment], (err) => {
+                if(err) throw err;
+                console.log("Added a new department");
+                // ask to do another action.
+                action();
+            }
+        )
+    })
 }
 
 viewAllEmployees = () => {
@@ -44,8 +101,16 @@ viewAllEmployees = () => {
         console.log("Getting all employees")
         console.table(res)
     })
+    action();
 };
 
-
+viewAllRoles = () => {
+connection.query("SELECT * FROM emp_role", (err ,res) => {
+    if (err) throw err
+    console.log("Getting all roles..")
+    console.table(res)
+})
+action();
+}
 
 action();
