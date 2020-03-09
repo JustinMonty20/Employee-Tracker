@@ -98,7 +98,7 @@ addRoles = () => {
 
         })
     }) 
-
+    action();
 }
    addEmployees = () => {
 
@@ -109,6 +109,7 @@ addRoles = () => {
         if (err) throw err
         console.table(res)
     })
+    action();
    }
 
 viewAllRoles = () => {
@@ -125,7 +126,7 @@ viewAllEmployees = () => {
     connection.query( join, (err, res) => {
         if (err) throw err
         console.log("Getting all employees")
-        console.table(res)
+        console.table(res);
     })
     action();
 };
