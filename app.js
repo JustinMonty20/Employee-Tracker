@@ -58,7 +58,8 @@ addDepartment = () => {
 
 
 addRoles = () => {
-    connection.query("SELECT * FROM department", (err, res) => {
+    connection.query("SELECT * FROM department", (err, departments) => {
+        if(err) throw err
         inquirer.prompt([{
             type: "input",
             message: "Enter the new role.",
@@ -68,25 +69,30 @@ addRoles = () => {
             name: "salary",
             message: "What is the new role's starting salary?"
         }, {
-            type: "list",
+            type: "rawlist",
             name: "departments",
             message: "Which department is this new role in?",
             choices: function () {
                 var departmentArr = [];
-                res.forEach(element => {
-                    departmentArr.push(`${element.id}`);
+                departments.forEach(dep => {
+                    departmentArr.push(`${dep.name}`);
                 });
 
                 return departmentArr;
             }
         
         }]).then((answer)=> {
+            for(i= 0; i < departments.length; i++) {
+                if(departments[i].name === answer.departments) {
+                    answer.department_id = departments[i].id
+                }
+            }
             connection.query(
                 "INSERT emp_role SET ?",
                 {
                     title: answer.newRole,
                     salary: answer.salary,
-                    department_id: answer.departments
+                    department_id: answer.department_id
                 }
             )
 
@@ -99,7 +105,10 @@ addRoles = () => {
    }
 
    viewAllDepartments = () => {
-
+    connection.query("SELECT * FROM department", (err, res) => {
+        if (err) throw err
+        console.table(res)
+    })
    }
 
 viewAllRoles = () => {

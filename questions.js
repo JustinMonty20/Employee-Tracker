@@ -1,6 +1,6 @@
 const startQ = {
     message: "What would you like to do?",
-    type: "list",
+    type: "rawlist",
     name: "action",
     choices: [
         "add department",
